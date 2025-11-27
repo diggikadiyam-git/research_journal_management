@@ -1,28 +1,19 @@
-# Stage 1 — Build the React App
-FROM node:18-alpine as build
-
+# Stage 1 — Build the frontend
+FROM node:18-alpine AS build
 WORKDIR /app
 
-# Copy package files
 COPY package*.json ./
-
-# Install dependencies
 RUN npm install
 
-# Copy the rest of the code
 COPY . .
-
-# Build the production version
 RUN npm run build
 
-# Stage 2 — Serve using NGINX
+# Stage 2 — Serve with NGINX
 FROM nginx:alpine
+WORKDIR /usr/share/nginx/html
 
-# Copy build output to NGINX default directory
-COPY --from=build /app/build /usr/share/nginx/html
+# Copy Vite/React dist folder
+COPY --from=build /app/dist .
 
-# Expose frontend port
 EXPOSE 80
-
-# Start NGINX
 CMD ["nginx", "-g", "daemon off;"]
