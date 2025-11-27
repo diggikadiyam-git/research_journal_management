@@ -1,14 +1,26 @@
-# Use lightweight JDK image
-FROM eclipse-temurin:17-jdk-alpine
-
-# Set working directory
+# Build Stage
+FROM eclipse-temurin:17-jdk-alpine AS build
 WORKDIR /app
 
-# Copy the JAR file (from your Maven build)
-COPY target/*.jar app.jar
+# Copy Maven wrapper and pom.xml
+COPY mvnw .
+COPY .mvn .mvn
+COPY pom.xml .
 
-# Expose backend port
+# Download dependencies (faster build)
+RUN ./mvnw dependency:go-offline
+
+# Copy all source code
+COPY src src
+
+# Build the jar
+RUN ./mvnw clean package -DskipTests
+
+# Run Stage
+FROM eclipse-temurin:17-jdk-alpine
+WORKDIR /app
+
+COPY --from=build /app/target/*.jar app.jar
+
 EXPOSE 8080
-
-# Run the Spring Boot application
 ENTRYPOINT ["java", "-jar", "app.jar"]
