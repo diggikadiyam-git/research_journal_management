@@ -19,7 +19,7 @@ export const AuthProvider = ({ children }) => {
   const loginUser = async (email, password) => {
     try {
       const response = await axios.post(
-        'http://localhost:8082/auth/login',
+        'http://localhost:8085/auth/login',
         { email, password },
         { headers: { 'Content-Type': 'application/json' } }
       );
@@ -35,7 +35,7 @@ export const AuthProvider = ({ children }) => {
   const registerUser = async (userData) => {
     try {
       const response = await axios.post(
-        'http://localhost:8082/auth/register',
+        'http://localhost:8085/auth/register',
         userData,
         { headers: { 'Content-Type': 'application/json' } }
       );
