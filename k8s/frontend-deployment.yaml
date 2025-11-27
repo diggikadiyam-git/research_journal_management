@@ -14,17 +14,11 @@ spec:
         app: journal-frontend
     spec:
       containers:
-        - name: frontend
+        - name: journal-frontend
           image: diggikadiyam/journal-frontend:latest
+          imagePullPolicy: IfNotPresent
           ports:
             - containerPort: 80
-          env:
-            - name: VITE_BACKEND_URL
-              valueFrom:
-                configMapKeyRef:
-                  name: backend-config
-                  key: BACKEND_URL
-
 ---
 apiVersion: v1
 kind: Service
@@ -32,9 +26,9 @@ metadata:
   name: journal-frontend-service
   namespace: journal-system
 spec:
-  type: NodePort
+  type: ClusterIP
   selector:
     app: journal-frontend
   ports:
     - port: 80
-      nodePort: 30080
+      targetPort: 80

@@ -4,8 +4,7 @@ metadata:
   name: mysql-pvc
   namespace: journal-system
 spec:
-  accessModes:
-    - ReadWriteOnce
+  accessModes: ["ReadWriteOnce"]
   resources:
     requests:
       storage: 1Gi
@@ -31,13 +30,16 @@ spec:
           image: mysql:8
           env:
             - name: MYSQL_ROOT_PASSWORD
-              value: 2220
+              value: "2220"
             - name: MYSQL_DATABASE
-              value: research_journal_db
+              value: "research_journal_db"
             - name: MYSQL_USER
-              value: root
+              value: "root"
             - name: MYSQL_PASSWORD
-              value: 2220
+              value: "2220"
+            - name: MYSQL_ROOT_HOST
+              value: "%"
+
           ports:
             - containerPort: 3306
           volumeMounts:
@@ -55,7 +57,8 @@ metadata:
   namespace: journal-system
 spec:
   type: ClusterIP
-  ports:
-    - port: 3306
   selector:
     app: mysql
+  ports:
+    - port: 3306
+      targetPort: 3306
