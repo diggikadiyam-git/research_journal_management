@@ -7,10 +7,13 @@ COPY mvnw .
 COPY .mvn .mvn
 COPY pom.xml .
 
-# Download dependencies (faster build)
+# Give execute permission to mvnw
+RUN chmod +x mvnw
+
+# Download dependencies
 RUN ./mvnw dependency:go-offline
 
-# Copy all source code
+# Copy the rest of the source code
 COPY src src
 
 # Build the jar
